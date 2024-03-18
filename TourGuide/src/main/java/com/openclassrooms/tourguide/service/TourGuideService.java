@@ -1,48 +1,43 @@
 package com.openclassrooms.tourguide.service;
 
+import com.openclassrooms.tourguide.DTO.NearbyAttractionsDTO;
 import com.openclassrooms.tourguide.helper.InternalTestHelper;
 import com.openclassrooms.tourguide.tracker.Tracker;
 import com.openclassrooms.tourguide.user.User;
 import com.openclassrooms.tourguide.user.UserReward;
-
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import rewardCentral.RewardCentral;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
+	private final RewardCentral rewardCentral;
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
 
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
+	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, RewardCentral rewardCentral) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
-		
+		this.rewardCentral = rewardCentral;
+
 		Locale.setDefault(Locale.US);
 
 		if (testMode) {
@@ -88,23 +83,51 @@ public class TourGuideService {
 		return providers;
 	}
 
+	private static final ExecutorService executor = Executors.newFixedThreadPool(100);
+
 	public VisitedLocation trackUserLocation(User user) {
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-		user.addToVisitedLocations(visitedLocation);
-		rewardsService.calculateRewards(user);
-		return visitedLocation;
-	}
-
-	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-		List<Attraction> nearbyAttractions = new ArrayList<>();
-		for (Attraction attraction : gpsUtil.getAttractions()) {
-			if (rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-				nearbyAttractions.add(attraction);
+		Callable<VisitedLocation> task = () -> {
+			try {
+				VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+				user.addToVisitedLocations(visitedLocation);
+				rewardsService.calculateRewards(user);
+				return visitedLocation;
+			} catch (Exception e) {
+				throw new RuntimeException("Failed to track user location", e);
 			}
+		};
+		Future<VisitedLocation> future = executor.submit(task);
+		try {
+			return future.get();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException("Thread was interrupted", e);
+		} catch (ExecutionException e) {
+			throw new RuntimeException("Error executing task", e);
 		}
-
-		return nearbyAttractions;
 	}
+
+	public List<NearbyAttractionsDTO> getNearByAttractions(VisitedLocation visitedLocation) {
+		List<NearbyAttractionsDTO> nearbyAttractions = new ArrayList<>();
+		for (Attraction attraction : gpsUtil.getAttractions()) {
+			NearbyAttractionsDTO nearbyAttractionsDTO = new NearbyAttractionsDTO();
+			Location location = new Location(attraction.latitude, attraction.longitude);
+			double distance = rewardsService.getDistance(visitedLocation.location, attraction);
+			nearbyAttractionsDTO.setAttractionName(attraction.attractionName);
+			nearbyAttractionsDTO.setAttractionLocation(location);
+			nearbyAttractionsDTO.setUserLocation(visitedLocation.location);
+			nearbyAttractionsDTO.setDistanceBetweenAttraction(distance);
+			nearbyAttractionsDTO.setRewardPointForAttraction(rewardCentral.getAttractionRewardPoints(attraction.attractionId, visitedLocation.userId));
+			nearbyAttractions.add(nearbyAttractionsDTO);
+
+		}
+		List<NearbyAttractionsDTO> nearbyAttractionsSorted = nearbyAttractions.stream()
+				.sorted(Comparator.comparingDouble(NearbyAttractionsDTO::getDistanceBetweenAttraction))
+				.limit(5)
+				.collect(Collectors.toList());
+		return nearbyAttractionsSorted;
+	}
+
 
 	private void addShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
