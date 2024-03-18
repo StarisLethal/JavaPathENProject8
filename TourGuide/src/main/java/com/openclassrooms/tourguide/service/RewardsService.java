@@ -117,6 +117,8 @@ public class RewardsService {
                 .thenRun(executorService::shutdown);
     }
 
+
+
     public static void visitedLocationCheck() {
 
     }
