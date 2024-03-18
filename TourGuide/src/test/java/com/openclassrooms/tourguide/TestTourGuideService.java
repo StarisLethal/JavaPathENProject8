@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import com.openclassrooms.tourguide.DTO.NearbyAttractionsDTO;
 import org.junit.jupiter.api.Test;

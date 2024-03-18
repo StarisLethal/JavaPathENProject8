@@ -11,10 +11,7 @@ import rewardCentral.RewardCentral;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Service
 public class RewardsService {
@@ -69,7 +66,7 @@ public class RewardsService {
         }));
     }*/
 
-    public void calculateRewards(User user) {
+/*    public void calculateRewards(User user) {
         List<VisitedLocation> userLocations = user.getVisitedLocations();
         List<Attraction> attractions = this.getAttractions();
         ExecutorService executorService = Executors.newFixedThreadPool(10);
@@ -95,6 +92,29 @@ public class RewardsService {
             executorService.shutdownNow();
             Thread.currentThread().interrupt();
         }
+    }*/
+
+    public CompletableFuture<Void> calculateRewards(User user) {
+        List<VisitedLocation> userLocations = user.getVisitedLocations();
+        List<Attraction> attractions = this.getAttractions();
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        userLocations.forEach(visitedLocation -> attractions.forEach(attraction -> {
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                if (user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(attraction.attractionName))) {
+                    if (nearAttraction(visitedLocation, attraction)) {
+                        int rewardPoints = getRewardPoints(attraction, user);
+                        user.addUserReward(new UserReward(visitedLocation, attraction, rewardPoints));
+                    }
+                }
+            }, executorService);
+            futures.add(future);
+        }));
+
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                .thenRun(executorService::shutdown);
     }
 
     public static void visitedLocationCheck() {
