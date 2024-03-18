@@ -65,8 +65,8 @@ public class TestPerformance {
 	/*	for (User user : allUsers) {
 			tourGuideService.trackUserLocation(user);
 		}*/
-		allUsers.parallelStream()
-						.forEach(tourGuideService::trackUserLocation);
+		tourGuideService.trackUserLocations(allUsers);
+
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();
 

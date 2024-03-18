@@ -83,6 +83,10 @@ public class TourGuideService {
 		return providers;
 	}
 
+	public void trackUserLocations(List<User> users) {
+		users.parallelStream().forEach(this::trackUserLocation);
+	}
+
 	private static final ExecutorService executor = Executors.newFixedThreadPool(100);
 
 	public VisitedLocation trackUserLocation(User user) {
