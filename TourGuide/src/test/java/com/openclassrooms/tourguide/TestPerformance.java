@@ -116,10 +116,7 @@ public class TestPerformance {
 		allUsers = tourGuideService.getAllUsers();
 		allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
 
-		CompletableFuture<?>[] futures = allUsers.stream()
-				.map(rewardsService::calculateRewards)
-				.toArray(CompletableFuture[]::new);
-		CompletableFuture.allOf(futures).join();
+		rewardsService.calculateRewardsForAllUsers(allUsers);
 
 		for (User user : allUsers) {
 			assertTrue(user.getUserRewards().size() > 0);

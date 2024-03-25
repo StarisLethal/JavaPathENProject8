@@ -21,7 +21,7 @@ public class RewardsService {
     // proximity in miles
     private int defaultProximityBuffer = 10;
     private int proximityBuffer = defaultProximityBuffer;
-    private int attractionProximityRange = 1000000;
+    private int attractionProximityRange = 1000000000;
 
     private List<Attraction> attractionsCache = new CopyOnWriteArrayList<>();
 
@@ -117,6 +117,13 @@ public class RewardsService {
                 .thenRun(executorService::shutdown);
     }
 
+    public void calculateRewardsForAllUsers(List<User> allUsers) {
+        CompletableFuture<?>[] futures = allUsers.stream()
+                .map(this::calculateRewards)
+                .toArray(CompletableFuture[]::new);
+
+        CompletableFuture.allOf(futures).join();
+    }
 
 
     public static void visitedLocationCheck() {
