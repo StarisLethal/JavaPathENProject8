@@ -13,7 +13,7 @@ build_job:
   script:
     - mvn compile
       -Dhttps.protocols=TLSv1.2
-      -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+      -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository/TourGuide
       -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN
       -Dorg.slf4j.simpleLogger.showDateTime=true
       -Djava.awt.headless=true
@@ -21,7 +21,7 @@ build_job:
 
 test_job:
   stage: test
-  image: maven:3.9.6-eclipse-temurin-21-alpine
+  image: maven:3.9.6-eclipse-temurin-21-alpine/TourGuide
   script:
     - mvn test
       -Dhttps.protocols=TLSv1.2
