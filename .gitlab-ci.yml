@@ -1,6 +1,9 @@
 before_script:
   - cd TourGuide
 
+variables:
+  MAVEN_OPTS: "-Xmx1024m -Xss512k"
+
 stages:
   - build
   - test
