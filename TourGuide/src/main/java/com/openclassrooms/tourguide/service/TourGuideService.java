@@ -87,9 +87,10 @@ public class TourGuideService {
 		users.parallelStream().forEach(this::trackUserLocation);
 	}
 
-	private static final ExecutorService executor = Executors.newFixedThreadPool(20);
-
 	public VisitedLocation trackUserLocation(User user) {
+		int availableProcessors = Runtime.getRuntime().availableProcessors();
+		ExecutorService executor = Executors.newFixedThreadPool(availableProcessors);
+
 		Callable<VisitedLocation> task = () -> {
 			try {
 				VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
