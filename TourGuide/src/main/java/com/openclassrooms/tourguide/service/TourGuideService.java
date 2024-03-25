@@ -87,14 +87,15 @@ public class TourGuideService {
 		users.parallelStream().forEach(this::trackUserLocation);
 	}
 
-	private static final ExecutorService executor = Executors.newFixedThreadPool(10);
+	private static final ExecutorService executor = Executors.newFixedThreadPool(30);
 
 	public VisitedLocation trackUserLocation(User user) {
 		Callable<VisitedLocation> task = () -> {
 			try {
 				VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 				user.addToVisitedLocations(visitedLocation);
-				rewardsService.calculateRewards(user);
+				CompletableFuture<Void> future = rewardsService.calculateRewards(user);
+				future.join();
 				return visitedLocation;
 			} catch (Exception e) {
 				throw new RuntimeException("Failed to track user location", e);
