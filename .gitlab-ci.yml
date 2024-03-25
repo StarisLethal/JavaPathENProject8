@@ -1,5 +1,5 @@
 before_script:
-  - cd TourGuide/pom.xml
+  - cd TourGuide
 
 stages:
   - build
