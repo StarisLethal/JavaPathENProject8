@@ -88,8 +88,8 @@ public class TourGuideService {
 	}
 
 	public VisitedLocation trackUserLocation(User user) {
-		int availableProcessors = Runtime.getRuntime().availableProcessors();
-		ExecutorService executor = Executors.newFixedThreadPool(availableProcessors);
+
+		ExecutorService executor = Executors.newFixedThreadPool(25);
 
 		Callable<VisitedLocation> task = () -> {
 			try {
