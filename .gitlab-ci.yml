@@ -19,7 +19,7 @@ build_job:
     - |
       mvn compile `
         -Dhttps.protocols=TLSv1.2 `
-        
+        -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
         -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN `
         -Dorg.slf4j.simpleLogger.showDateTime=true `
         -Djava.awt.headless=true `
@@ -32,7 +32,7 @@ test-basic:
     - |
       mvn test -Dtest=TourguideApplicationTests,TestTourGuideService `
         -Dhttps.protocols=TLSv1.2 `
-        
+        -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
         -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN `
         -Dorg.slf4j.simpleLogger.showDateTime=true `
         -Djava.awt.headless=true `
@@ -45,7 +45,7 @@ test-rewards:
     - |
       mvn test -Dtest=TestRewardsService `
         -Dhttps.protocols=TLSv1.2 `
-        
+        -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
         -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN `
         -Dorg.slf4j.simpleLogger.showDateTime=true `
         -Djava.awt.headless=true `
@@ -58,7 +58,7 @@ test-performance:
     - |
       mvn test -Dtest=TestPerformance `
         -Dhttps.protocols=TLSv1.2 `
-        
+        -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
         -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN `
         -Dorg.slf4j.simpleLogger.showDateTime=true `
         -Djava.awt.headless=true `
