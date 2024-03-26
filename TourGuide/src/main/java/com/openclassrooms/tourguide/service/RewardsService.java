@@ -97,7 +97,7 @@ public class RewardsService {
     public CompletableFuture<Void> calculateRewards(User user) {
         List<VisitedLocation> userLocations = user.getVisitedLocations();
         List<Attraction> attractions = this.getAttractions();
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
 
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
