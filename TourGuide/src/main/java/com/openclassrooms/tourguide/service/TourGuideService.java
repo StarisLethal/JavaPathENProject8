@@ -89,7 +89,9 @@ public class TourGuideService {
 
 	public VisitedLocation trackUserLocation(User user) {
 
-		ExecutorService executor = Executors.newFixedThreadPool(12);
+		int numberOfCores = Runtime.getRuntime().availableProcessors();
+		int poolSize = numberOfCores + 1;
+		ExecutorService executor = Executors.newFixedThreadPool(poolSize);
 
 		Callable<VisitedLocation> task = () -> {
 			try {
