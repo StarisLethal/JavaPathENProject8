@@ -89,7 +89,7 @@ public class TourGuideService {
 
 	public VisitedLocation trackUserLocation(User user) {
 
-		ExecutorService executor = Executors.newFixedThreadPool(20);
+		ExecutorService executor = Executors.newFixedThreadPool(12);
 
 		Callable<VisitedLocation> task = () -> {
 			try {
