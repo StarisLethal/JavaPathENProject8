@@ -16,7 +16,7 @@ test-tourguide-and-rewards:
   stage: test-tourguide-and-rewards
   image: maven:latest
   script:
-    - mvn test -Dtest=TourguideApplicationTests,TestRewardsService,TestTourGuideService
+    - mvn test -Dtest="TourguideApplicationTests, TestRewardsService, TestTourGuideService"
 
 test-performance:
   stage: test-performance
