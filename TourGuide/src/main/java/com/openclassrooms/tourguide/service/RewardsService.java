@@ -99,7 +99,7 @@ public class RewardsService {
         List<Attraction> attractions = this.getAttractions();
         int numberOfCores = Runtime.getRuntime().availableProcessors();
         int poolSize = numberOfCores + 1;
-        ExecutorService executorService = Executors.newFixedThreadPool(poolSize);
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
 
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
