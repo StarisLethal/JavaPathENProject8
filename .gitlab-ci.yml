@@ -15,13 +15,13 @@ build_job:
   stage: build
   image: maven:3.8.4-eclipse-temurin-17-alpine
   script:
-    - cmd /C "mvn -T 2C compile -Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true --batch-mode --errors --fail-at-end --show-version"
+    - mvn -T 2C compile -Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true --batch-mode --errors --fail-at-end --show-version
 
 test-tourguide-and-rewards:
   stage: test-tourguide-and-rewards
   image: maven:3.8.4-eclipse-temurin-17-alpine
   script:
-    - cmd /C "mvn -T 2C test -Dtest=TourguideApplicationTests,TestRewardsService,TestTourGuideService -Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true --batch-mode --errors --fail-at-end --show-version"
+    - mvn -T 2C test -Dtest=TourguideApplicationTests,TestRewardsService,TestTourGuideService -Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true --batch-mode --errors --fail-at-end --show-version
 
 test-performance:
   stage: test-performance
@@ -29,4 +29,4 @@ test-performance:
     MAVEN_OPTS: "-Xmx4096m -Xms512m"
   image: maven:3.8.4-eclipse-temurin-17-alpine
   script:
-    - cmd /C "mvn -T 2C test -Dtest=TestPerformance -Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true --batch-mode --errors --fail-at-end --show-version"
+    - mvn -T 2C test -Dtest=TestPerformance -Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true --batch-mode --errors --fail-at-end --show-version
