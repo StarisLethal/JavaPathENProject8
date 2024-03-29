@@ -8,18 +8,18 @@ stages:
 
 build_job:
   stage: build
-  image: maven:latest
+
   script:
     - mvn compile 
 
 test-tourguide-and-rewards:
   stage: test-tourguide-and-rewards
-  image: maven:latest
+
   script:
     - mvn test -Dtest="TourguideApplicationTests, TestRewardsService, TestTourGuideService"
 
 test-performance:
   stage: test-performance
-  image: maven:latest
+
   script:
     - mvn test -Dtest=TestPerformance
