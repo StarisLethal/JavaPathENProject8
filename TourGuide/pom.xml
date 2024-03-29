@@ -47,6 +47,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<repository>
+			<id>localrepository</id>
+			<url>file://${project.basedir}/libs</url>
+    	</repository>
+
+		<!-- 
 		<dependency>
 			<groupId>gpsUtil</groupId>
 			<artifactId>gpsUtil</artifactId>
@@ -70,6 +76,8 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/libs/RewardCentral.jar</systemPath>
 		</dependency>
+		-->
+		
 	</dependencies>
 
 	<build>
