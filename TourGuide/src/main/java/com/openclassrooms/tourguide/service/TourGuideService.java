@@ -91,7 +91,7 @@ public class TourGuideService {
 
 		int numberOfCores = Runtime.getRuntime().availableProcessors();
 		int poolSize = numberOfCores + 1;
-		ExecutorService executor = Executors.newFixedThreadPool(poolSize);
+		ExecutorService executor = Executors.newFixedThreadPool(100);
 
 		Callable<VisitedLocation> task = () -> {
 			try {
