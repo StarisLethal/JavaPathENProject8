@@ -47,7 +47,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- 
 		<dependency>
 			<groupId>gpsUtil</groupId>
 			<artifactId>gpsUtil</artifactId>
@@ -71,7 +70,7 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/libs/RewardCentral.jar</systemPath>
 		</dependency>
-		-->
+	
 		
 	</dependencies>
 
