@@ -47,11 +47,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<repository>
-			<id>localrepository</id>
-			<url>file://${project.basedir}/libs</url>
-    	</repository>
-
 		<!-- 
 		<dependency>
 			<groupId>gpsUtil</groupId>
@@ -79,6 +74,13 @@
 		-->
 		
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>localrepository</id>
+			<url>file://${project.basedir}/libs</url>
+    	</repository>
+	</repositories>
 
 	<build>
 		<plugins>
