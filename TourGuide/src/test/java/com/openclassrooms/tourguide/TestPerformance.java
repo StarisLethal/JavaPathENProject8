@@ -59,10 +59,8 @@ public class TestPerformance {
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		
-		List<User> allUsers = tourGuideService.getAllUsers();
-		//tourGuideService.trackUserLocations(tourGuideService.getAllUsers());
-		allUsers.parallelStream().forEach(tourGuideService::trackUserLocation);
+
+		tourGuideService.trackUserLocations(tourGuideService.getAllUsers());
 
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();
@@ -118,7 +116,6 @@ public class TestPerformance {
 		allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
 
 		rewardsService.calculateRewardsForAllUsers(allUsers);
-		//allUsers.parallelStream().forEach(rewardsService::calculateRewards);
 
 		for (User user : allUsers) {
 			assertTrue(user.getUserRewards().size() > 0);
