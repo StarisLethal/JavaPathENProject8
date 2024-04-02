@@ -26,3 +26,9 @@ test-performance:
 
   script:
     - mvn test -Dtest=TestPerformance
+
+deploy_job:
+  stage: deploy
+
+  script:
+    - mvn deploy
